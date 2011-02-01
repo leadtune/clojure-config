@@ -38,5 +38,7 @@ It is now possible to add properties directly in the profile, just use :properti
 if there is a mathing property file it will still be loaded and merged.
 
 (property "key") ; returns the value or nil
+
 (properties)     ; returns all properties in a map
+
 global properties added

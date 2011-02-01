@@ -1,10 +1,10 @@
 ##Warning! still not stable..
 
 # Clojure config
+A small framework to load property config runtime by profiles
+
 ### Current version
 1.0.4
-
-A small framework to load property config runtime by profiles
 
 # Usage
 

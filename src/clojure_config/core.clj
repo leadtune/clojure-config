@@ -2,6 +2,7 @@
   (:use clojure.contrib.logging)
   (:require [clojure.contrib.string :as string]
 	    [clojure.contrib.properties :as p]
+	    [clojure.contrib.logging :as log]
 	    [clojure.walk :as w])
   (:import (java.net InetAddress))
   (:import (java.io File FileNotFoundException)))
@@ -12,7 +13,7 @@
 
 ;; System Calls
 (defn hostname []
-  (let [addr (. InetAddress getLocalHost)]    
+  (let [addr (. InetAddress getLocalHost)]
     (.getHostName addr)))
 
 (defn- env []
@@ -77,6 +78,10 @@
 		      (load-from-file (:global files))		      
 		      (load-from-file (:parent-file files))
 		      (load-from-file (:file files)))]
+          (log/debug (str "profile:" profile))
+          (log/debug (str "global" global))
+          (log/debug (str "parent:" parent))
+
       properties)))
 
 

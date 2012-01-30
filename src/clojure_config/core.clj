@@ -1,15 +1,13 @@
 (ns clojure-config.core
-  (:use clojure.contrib.logging)
-  (:require [clojure.contrib.string :as string]
-	    [clojure.contrib.properties :as p]
-	    [clojure.contrib.logging :as log]
+  (:require
+	    [clojure.tools.logging :as log]
 	    [clojure.walk :as w])
   (:import (java.net InetAddress))
   (:import (java.io File FileNotFoundException)))
 
-(def *properties* {})
+(def ^{:dynamic true} *properties* {})
 
-		  
+
 
 ;; System Calls
 (defn hostname []
@@ -49,33 +47,33 @@
       (host-match? current)
       (env-match? current)))
 
-(defn- load-from-file [filename]  
+(defn- load-from-file [filename]
   (w/keywordize-keys (if (not (nil? filename))
     (let [resource (-> (Thread/currentThread)
-		     (.getContextClassLoader)			
+		     (.getContextClassLoader)
 		     (.getResource filename))]
-    (if (not (nil? resource))      
+    (if (not (nil? resource))
       (into {} (doto (java.util.Properties.)
 		 (.load (-> (Thread/currentThread)
-			    (.getContextClassLoader)			
+			    (.getContextClassLoader)
 			    (.getResourceAsStream filename))))))))))
 
 
-(defn-  determin-profile [profiles]
-  (first (filter (fn [p] (match-params? p)) profiles)))
+(defn- determine-profile [profiles]
+  (first (filter match-params? profiles)))
 
 
 (defn load-profile [profiles]
   (if (not (nil? profiles))
-    (let [profile (determin-profile profiles)
-	  global (first (filter (fn [x] (= (:name x) "global")) profiles)) 
+    (let [profile (determine-profile profiles)
+	  global (first (filter (fn [x] (= (:name x) "global")) profiles))
 	  parent (first (filter (fn [x] (= (:name x) (:parent profile))) profiles))
 	  files (get-property-files profile)
 	  properties (merge
 		      (:properties global)
 		      (:properties parent)
 		      (:properties profile)
-		      (load-from-file (:global files))		      
+		      (load-from-file (:global files))
 		      (load-from-file (:parent-file files))
 		      (load-from-file (:file files)))]
           (log/debug (str "profile:" profile))
